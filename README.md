@@ -5,9 +5,9 @@ The New York Times Scraper, a.k.a NYT Scraper, is a scraper app which captures t
 In this repository, you can see the source code of NYT Scraper.
 
 ## Key Dependencies
-`cheerio`: scrapes front-end code from https://www.nytimes.com/section/world
-`mongoose`: be in charge of database of `scrap`
-`express`: builds server-side routes and functions
-`morgan`: logs server-side requests, helps with debugging
-`express-handlebars`: a powerful front-end builder without requiring multiple html pages
-`axios`: similar to ajax; used for GET, and other requests.
+1. `cheerio`: scrapes front-end code from https://www.nytimes.com/section/world  
+2. `mongoose`: be in charge of database of `scrap`  
+3. `express`: builds server-side routes and functions  
+4. `morgan`: logs server-side requests, helps with debugging  
+5. `express-handlebars`: a powerful front-end builder without requiring multiple html pages  
+6. `axios`: similar to ajax; a promise-based HTTP client used for performing HTTP and HTTPS requests.
