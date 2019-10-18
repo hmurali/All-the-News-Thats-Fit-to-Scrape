@@ -22,7 +22,7 @@ mongoose.connect(MONGODB_URI);
 app.get("/", function(req, res) {
     db.Article.find({}, null, {sort: {created: -1}}, function(err, data) {
         if(data.length === 0) {
-            res.render("placedholder", {message: "There's nothing scraped yet. Please click \"Scrape For Newest Articles\" for fresh and delicious news."});
+            res.render("placeholder", {message: "There's nothing scraped yet. Please click \"Scrape For Newest Articles\" for fresh and delicious news."});
         } else {
             res.render("index", {articles, data});
         }
