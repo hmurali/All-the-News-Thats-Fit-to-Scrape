@@ -35,10 +35,13 @@ app.get("/scrape", function(req, res) {
         var $ = cheerio.load(response.data);
         var result = {};
         $("div.story-body").each(function(i, element) {
-            var link = $(element).find("a").attr("href");
-            var title = $(element).find("h2.headline").text().trim();
-            var summary = $(element).find("p.summary").text().trim();
-            var img = $(element).parent().find("figure.media").find("img").attr("src");
+            var link = $(element).find("div.css-10wtrbd").find("h2.css-12vidh").find("a").attr("href");
+            console.log("Link: " + link);
+            var title = $(element).find("div.css-10wtrbd").find("h2.css-12vidh").find("a").attr("href").text().trim();
+            console.log("title: " + title);
+            var summary = $(element).find("div.css-10wtrbd").find("p.css-1gh531").text().trim();
+            console.log("summary: " + summary);
+            var img = $(element).parent().find("figure.photo").find("a").attr("data-rref").find("img").attr("src");
             result.link = link;
             result.title = title;
             if(summary) {
