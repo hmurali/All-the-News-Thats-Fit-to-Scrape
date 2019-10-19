@@ -25,7 +25,7 @@ app.get("/", function(req, res) {
         if(data.length === 0) {
             res.render("placeholder", {message: "There's nothing scraped yet. Please click \"Scrape For Newest Articles\" for fresh and delicious news."});
         } else {
-            res.render("index", {articles, data});
+            res.render("index", {Article, data});
         }
     });
 });
@@ -34,6 +34,7 @@ app.get("/scrape", function(req, res) {
     axios.get("https://www.nytimes.com/section/world").then(function(response) {
         var $ = cheerio.load(response.data);
         var result = {};
+        var results = [];
         $("div.story-body").each(function(i, element) {
             var link = $(element).find("div.css-10wtrbd").find("h2.css-12vidh").find("a").attr("href");
             console.log("Link: " + link);
@@ -52,15 +53,21 @@ app.get("/scrape", function(req, res) {
             } else {
                 result.img = $(element).find(".wide-thumb").find("img").attr("src");
             };
-            db.Article.create(result).then(function(dbArticle) {
+            result.push(result);
+        });
+        const promises = results.map(function(result){
+            return db.Article.create(result)
+        }) 
+        Promise.all(promises)
+            .then(function(dbArticle) {
+                res.send("Scrape Complete!");
+                console.log("Scrape finished.");
                 console.log(dbArticle);
             }).catch(function(err) {
                 console.log(err);
             });
-        });
-        //res.send("Scrape Complete!");
-        console.log("Scrape finished.");
-        res.redirect("/");
+        
+        
     });
 });
 
