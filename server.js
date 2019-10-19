@@ -18,6 +18,7 @@ app.engine("handlebars", exphbs({defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+console.log(MONGODB_URI);
 mongoose.connect(MONGODB_URI);
 
 app.get("/", function(req, res) {
@@ -31,18 +32,20 @@ app.get("/", function(req, res) {
 });
 
 app.get("/scrape", function(req, res) {
+    console.log("about to scrape");
     axios.get("https://www.nytimes.com/section/world").then(function(response) {
+        //console.log(response.data);
         var $ = cheerio.load(response.data);
         var result = {};
         var results = [];
         $("div.story-body").each(function(i, element) {
-            var link = $(element).find("div.css-10wtrbd").find("h2.css-12vidh").find("a").attr("href");
+            var link = $(element).find("div.css-10wtrbd").find("h2.css-12vidh.e4e4i5l1").find("a").attr("href");
             console.log("Link: " + link);
-            var title = $(element).find("div.css-10wtrbd").find("h2.css-12vidh").find("a").attr("href").text().trim();
+            var title = $(element).find("div.css-10wtrbd").find("h2.css-12vidh.e4e4i5l1").find("a").attr("href").text().trim();
             console.log("title: " + title);
-            var summary = $(element).find("div.css-10wtrbd").find("p.css-1gh531").text().trim();
+            var summary = $(element).find("div.css-10wtrbd").find("p.css-1gh531.e4e4i514").text().trim();
             console.log("summary: " + summary);
-            var img = $(element).parent().find("figure.photo").find("a").attr("data-rref").find("img").attr("src");
+            var img = $(element).find("figure.photo.css-1ag53q4.e1oaj3z10").find("a").attr("href").find("img").attr("src");
             result.link = link;
             result.title = title;
             if(summary) {
@@ -53,9 +56,10 @@ app.get("/scrape", function(req, res) {
             } else {
                 result.img = $(element).find(".wide-thumb").find("img").attr("src");
             };
-            result.push(result);
+            results.push(result);
         });
         const promises = results.map(function(result){
+            console.log("String saving", result);
             return db.Article.create(result)
         }) 
         Promise.all(promises)
@@ -66,8 +70,6 @@ app.get("/scrape", function(req, res) {
             }).catch(function(err) {
                 console.log(err);
             });
-        
-        
     });
 });
 
